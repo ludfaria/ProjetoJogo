@@ -1,6 +1,6 @@
 import NotSolidObjects from "./notSolidObjects.js";
 
-class KeepObjects extends NotSolidObjects {
+class Equipments extends NotSolidObjects {
     constructor(position) {
         super(position);
     }
@@ -10,4 +10,4 @@ class KeepObjects extends NotSolidObjects {
     }
 }
 
-export default KeepObjects;
+export default Equipments;

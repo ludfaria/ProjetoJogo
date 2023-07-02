@@ -1,6 +1,6 @@
-import KeepObjects from "./keepObjects.js";
+import Equipments from "./equipments.js";
 
-class Hammer extends KeepObjects {
+class Hammer extends Equipments {
     constructor(position) {
         super(position);
     }

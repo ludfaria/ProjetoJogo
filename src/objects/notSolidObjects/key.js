@@ -1,6 +1,6 @@
-import KeepObjects from "./keepObjects.js";
+import Equipments from "./equipments.js";
 
-class Key extends KeepObjects {
+class Key extends Equipments {
     constructor(position) {
         super(position);
     }

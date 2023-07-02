@@ -13,8 +13,10 @@ import BadGuy from "../objects/moveables/enemies/badGuy.js";
 import Meat from "../objects/notSolidObjects/meat.js";
 import Hammer from "../objects/notSolidObjects/hammer.js";
 import Key from "../objects/notSolidObjects/key.js";
-import KeepObjects from "../objects/notSolidObjects/keepObjects.js";
+import Equipments from "../objects/notSolidObjects/equipments.js";
 import Interface from "./interface.js";
+import StatusBar from "../objects/statusBar.js";
+
 
 // selectRoom(stringRoom){
 //
@@ -26,6 +28,7 @@ const initialRoom = "0";
 class Map {
     buildRoom = [];
     heroPosition;
+    statusBar = StatusBar.getInstance();
 
     constructor() {
 // Interface.getInstance().removeImage(tile)
@@ -140,13 +143,31 @@ class Map {
         let tile = this.buildRoom.find(function (tile) {
             return tile.position.equals(newPosition)
         })
+        let indexToRemove = this.buildRoom.indexOf(tile);
 
         if (tile instanceof Meat) {
-            this.buildRoom.splice(tile, 1);
+            this.buildRoom.splice(indexToRemove, 1);
             Interface.getInstance().removeImage(tile)
+            Interface.getInstance().showMessage("Recuperou vida")
 
         }
 
+        if (tile instanceof Equipments) {
+            this.statusBar.addItems(tile);
+            this.buildRoom.splice(indexToRemove, 1);
+            Interface.getInstance().removeImage(tile)
+            Interface.getInstance().showMessage("Novo item")
+
+
+        }
+
+        if (tile instanceof Enemies) {
+            this.buildRoom.splice(indexToRemove, 1);
+            Interface.getInstance().removeImage(tile)
+            Interface.getInstance().showMessage("Se eu pudesse eu matava mil")
+
+        }
+        console.log("a carne sumiu?", this.buildRoom);
         //              this.buildRoom.splice(Meat, 1);
         // console.log(array);
     }

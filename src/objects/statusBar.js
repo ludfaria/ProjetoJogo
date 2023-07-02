@@ -10,6 +10,15 @@ class StatusBar {
     collectedObjects =[];
 
 
+    static #instance;
+
+    static getInstance() {
+        if (StatusBar.#instance === undefined) {
+            StatusBar.#instance = new StatusBar();
+        }
+        return StatusBar.#instance;
+    }
+
     addBackground() {
         for (let x = 0; x < 10; x++) {
             let position = new Position(x, 0);
@@ -27,13 +36,13 @@ class StatusBar {
         }
     }
 
-    // addItems(objetoColetado){
-    //     for (let x = 7; x < 10; x++) {
-    //         let position = new Position(x, 0);
-    //
-    //        this.collectedObjects.push(objetoColetado )
-    //     }
-    // }    TODO: FAZER A FUNÇÃO DE PASSAR POR CIMA DO OBJETO
+    addItems(objetoColetado){
+        for (let x = 7; x < 10; x++) {
+            let position = new Position(x, 0);
+
+           this.collectedObjects.push(objetoColetado );
+        }
+    }
 
 
 }

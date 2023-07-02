@@ -6,6 +6,11 @@ import engine from "../../game/engine.js";
 import Moveables from "./moveables.js";
 
 class Hero extends Moveables {
+    attackPower = 2;
+    lifePoints = 5; //deveria estar no construtor?
+
+
+
     constructor(position) {
         super(position);
     }
@@ -15,7 +20,6 @@ class Hero extends Moveables {
     get image() {
         return "Hero.png";
     }
-
 
 }
 

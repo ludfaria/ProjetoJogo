@@ -50,13 +50,17 @@ class Engine {
         }
         this.gui.addImages(floorTiles);
 
-        let statusTiles = new StatusBar();
+        let statusTiles = StatusBar.getInstance();
+        // não pode ficar um new, pq fiz um singleton em maps. e só existe uma statusbar. pra ter certeza
+        //que é a mesma statusbar
         statusTiles.addBackground();
         statusTiles.addFireball();
 
+
         console.log(statusTiles.background)
         this.gui.addStatusImages(statusTiles.background);
-        this.gui.addStatusImages(statusTiles.fireball)
+        this.gui.addStatusImages(statusTiles.fireball);
+        this.gui.addStatusImages(statusTiles.collectedObjects);
 
 
         let mapRoom = new Map();
@@ -94,38 +98,44 @@ class Engine {
         let listOfEnemies = this.tiles.filter(function (tile) {
             return tile instanceof Enemies;
         })
-        for (let enemy of listOfEnemies) {
-
-            // enemy.randomMove(this.activeMap);
-            enemy.enemyBehaviour(this.hero, this.activeMap);
-            //  enemy.colisao(this.hero);
-
-
-        }
+        // for (let enemy of listOfEnemies) {
+        //
+        //     // enemy.randomMove(this.activeMap);
+        //     enemy.enemyBehaviour(this.hero, this.activeMap);
+        //     //  enemy.colisao(this.hero);
+        //
+        //
+        // }
 
         switch (key) {
             case "ArrowRight":
                 this.hero.moves(Direction.RIGHT, this.activeMap);
+                this.enemyTurn(listOfEnemies);
                 break;
 
             case "ArrowLeft":
                 this.hero.moves(Direction.LEFT, this.activeMap);
+                this.enemyTurn(listOfEnemies);
                 break;
 
             case "ArrowUp":
                 this.hero.moves(Direction.UP, this.activeMap);
+                this.enemyTurn(listOfEnemies);
                 break;
 
             case "ArrowDown":
                 // console.log(this.activeMap)
                 this.hero.moves(Direction.DOWN, this.activeMap);
-                break;
+                this.enemyTurn(listOfEnemies);
+                break
         }
+        
+    }
 
-        console.log('hero pos move', this.hero.position)
-
-
-
+    enemyTurn(listOfEnemies) {
+        for (let enemy of listOfEnemies) {
+            enemy.enemyBehaviour(this.hero, this.activeMap);
+        }
     }
 
 

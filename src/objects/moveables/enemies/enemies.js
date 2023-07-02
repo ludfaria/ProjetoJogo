@@ -21,10 +21,10 @@ class Enemies extends Moveables {
 
     enemyBehaviour(hero, activeMap) {
 
-        console.log('hero on enemy', hero.position)
-
-        console.log("engine", this.engine);
-        console.log("engine", this.engine.hero);
+        // console.log('hero on enemy', hero.position)
+        //
+        // console.log("engine", this.engine);
+        // console.log("engine", this.engine.hero);
 
         let a = hero.position.x - this.position.x;
         let b = hero.position.y - this.position.y;
@@ -34,7 +34,7 @@ class Enemies extends Moveables {
             // this.chase = true;
             console.log("PERSEGUIR O HERÓI")
             this.chaseHero(hero, activeMap);
-            this.colisao(hero);
+           // this.colisao(hero);
         } else {
             console.log("inimigo a andar de forma aleatória")
             this.randomMove(activeMap); // se o singleton funcionar, não precisa como parametro
@@ -45,6 +45,7 @@ class Enemies extends Moveables {
     chaseHero(hero, activeMap) {
         let actualHeroXPosition = hero.position.x;
         let actualHeroYPosition = hero.position.y;
+        console.log('CHaseHero -> activeMap:', activeMap);
 
         if (actualHeroXPosition > this.position.x) {
             this.moves(Direction.RIGHT, activeMap);
