@@ -12,7 +12,7 @@ class Moveables extends SolidObject {
     moves(direction, map) {
         // console.log('this position', this.position)
         let newPosition = this.position.plus(direction.asVector());
-        // console.log("ESSA É A MOVEABLE NEW POSITION", newPosition)
+        console.log("ESSA É A MOVEABLE NEW POSITION", newPosition)
         //  console.log('map.isTileFree(newPosition', map.isTileFree(newPosition))
         if (map.isTileFree(newPosition)) {
             // return this.position = newPosition;
