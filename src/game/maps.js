@@ -83,6 +83,7 @@ class Map {
                         break;
                     case "H":
                         this.heroPosition = position;
+                        // this.buildRoom.push(new Hero(position));
                         break;
                     case "B":
                         this.buildRoom.push(new Bat(position));
@@ -104,6 +105,16 @@ class Map {
 
             }
         }
+    }
+
+    addHero(heroTile) {
+        let tile = this.buildRoom.find(function (tile) {
+            return tile.position.equals(heroTile.position)
+        })
+        let indexToChange = this.buildRoom.indexOf(tile);
+        this.buildRoom[indexToChange] = heroTile;
+        console.log('hero tile:', this.buildRoom[indexToChange])
+
     }
 
 
@@ -144,6 +155,7 @@ class Map {
             return tile.position.equals(newPosition)
         })
         let indexToRemove = this.buildRoom.indexOf(tile);
+        console.log('disappearTile tile:', this.buildRoom[indexToRemove])
 
         if (tile instanceof Meat) {
             this.buildRoom.splice(indexToRemove, 1);
@@ -154,26 +166,12 @@ class Map {
 
         if (tile instanceof Equipments) {
 
-            //TODO: COLOCAR O MARTELO NA STATUSBAR ANTES DA KEY
-
-            if (tile instanceof Hammer) {
-                this.statusBar.addHammer()
-                // this.statusBar.addItems(tile);
-                this.buildRoom.splice(indexToRemove, 1);
-                Interface.getInstance().addStatusImage(tile);
-            }
-
-            if (tile instanceof Key){
-                this.statusBar.addKey();
-                this.buildRoom.splice(indexToRemove, 1);
-
-                Interface.getInstance().addStatusImage(tile);
-
-            }
+            this.statusBar.addItems(tile);
+            this.buildRoom.splice(indexToRemove, 1);
+            Interface.getInstance().addStatusImages(this.statusBar.inventory);
 
             Interface.getInstance().removeImage(tile)
             Interface.getInstance().showMessage("Novo item")
-
 
         }
 
@@ -181,6 +179,13 @@ class Map {
             this.buildRoom.splice(indexToRemove, 1);
             Interface.getInstance().removeImage(tile)
             Interface.getInstance().showMessage("Se eu pudesse eu matava mil")
+
+        }
+
+        if (tile instanceof Hero) {
+            this.buildRoom.splice(indexToRemove, 1);
+            Interface.getInstance().removeImage(tile)
+            Interface.getInstance().showMessage("Morri!!")
 
         }
         console.log("a carne sumiu?", this.buildRoom);

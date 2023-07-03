@@ -21,7 +21,7 @@ import StatusBar from "../objects/statusBar.js";
 
 class Engine {
     gui = Interface.getInstance();
-    hero;
+    hero = Hero.getInstance();
     tiles = [];
     activeMap;
 
@@ -73,9 +73,11 @@ class Engine {
 
         this.gui.addImages(this.tiles);
 
+        //TODO: Arrumar esse new hero
+
         // this.hero = new Hero(mapRoom.heroPosition);
         this.hero = new Hero(new Position(4, 6));
-        //this.gui.addImages(map.buildRoom)
+        // this.activeMap.addHero(this.hero);
 
 
         this.gui.addImage(this.hero);

@@ -28,9 +28,14 @@ class Enemies extends Moveables {
 
         let a = hero.position.x - this.position.x;
         let b = hero.position.y - this.position.y;
-        let distance = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+        // Pitagoras
+        // let distP = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 
-        if (distance < 3) {
+        // Manhathan distance
+        let distance = Math.abs(a) + Math.abs(b);
+
+        // if (distance < 3) {
+        if (distance < 4 && distance > 1) {
             // this.chase = true;
             console.log("PERSEGUIR O HERÓI")
             this.chaseHero(hero, activeMap);
