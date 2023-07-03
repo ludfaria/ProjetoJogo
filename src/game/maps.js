@@ -153,8 +153,24 @@ class Map {
         }
 
         if (tile instanceof Equipments) {
-            this.statusBar.addItems(tile);
-            this.buildRoom.splice(indexToRemove, 1);
+
+            //TODO: COLOCAR O MARTELO NA STATUSBAR ANTES DA KEY
+
+            if (tile instanceof Hammer) {
+                this.statusBar.addHammer()
+                // this.statusBar.addItems(tile);
+                this.buildRoom.splice(indexToRemove, 1);
+                Interface.getInstance().addStatusImage(tile);
+            }
+
+            if (tile instanceof Key){
+                this.statusBar.addKey();
+                this.buildRoom.splice(indexToRemove, 1);
+
+                Interface.getInstance().addStatusImage(tile);
+
+            }
+
             Interface.getInstance().removeImage(tile)
             Interface.getInstance().showMessage("Novo item")
 
@@ -172,21 +188,6 @@ class Map {
         // console.log(array);
     }
 
-
-    // isTile...(newPosition) {
-    //
-    //     let tile = this.buildRoom.find(function (tile) {
-    //         return tile.position.equals(newPosition)
-    //     })
-    //
-    //
-    //     if (tile instanceof Meat) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    //
-    // }
 
 
 }

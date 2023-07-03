@@ -55,12 +55,14 @@ class Engine {
         //que é a mesma statusbar
         statusTiles.addBackground();
         statusTiles.addFireball();
+        statusTiles.addLifeBar();
 
 
         console.log(statusTiles.background)
         this.gui.addStatusImages(statusTiles.background);
         this.gui.addStatusImages(statusTiles.fireball);
-        this.gui.addStatusImages(statusTiles.collectedObjects);
+      //  this.gui.addStatusImages(statusTiles.collectedObjects);
+        this.gui.addStatusImages(statusTiles.lifeBar);
 
 
         let mapRoom = new Map();
@@ -129,7 +131,7 @@ class Engine {
                 this.enemyTurn(listOfEnemies);
                 break
         }
-        
+
     }
 
     enemyTurn(listOfEnemies) {

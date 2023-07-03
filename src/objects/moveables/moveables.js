@@ -5,7 +5,7 @@ import Hero from "./hero.js";
 
 class Moveables extends SolidObject {
     attackPower = 1;
-    lifePoints = 2;
+    lifePoints = 4;
 
     constructor(position) {
         super(position);
@@ -32,6 +32,7 @@ class Moveables extends SolidObject {
         } else {
 
             if (tile instanceof Moveables) {
+              //  this.position = this.position;
                 this.attack(tile, map)//se for instancia de moveable, acontece a colisão
             }
         }
@@ -79,6 +80,7 @@ class Moveables extends SolidObject {
     takeDamage(attackPower, map) {
         this.lifePoints = this.lifePoints - attackPower;
         console.log("fui atacado. minha vida agora é", this.lifePoints );
+
         if (this.lifePoints <= 0) {
             console.log("MORRI");
             map.disappearTile(this.position);

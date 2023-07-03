@@ -34,7 +34,12 @@ class Enemies extends Moveables {
             // this.chase = true;
             console.log("PERSEGUIR O HERÓI")
             this.chaseHero(hero, activeMap);
-           // this.colisao(hero);
+            // this.colisao(hero);
+        }
+
+        if (distance === 1){
+            this.attack(hero, activeMap); // coloquei o ataque no lugar certo???
+
         } else {
             console.log("inimigo a andar de forma aleatória")
             this.randomMove(activeMap); // se o singleton funcionar, não precisa como parametro
@@ -46,6 +51,11 @@ class Enemies extends Moveables {
         let actualHeroXPosition = hero.position.x;
         let actualHeroYPosition = hero.position.y;
         console.log('CHaseHero -> activeMap:', activeMap);
+
+
+        // if ((actualHeroXPosition = this.position.x) && (actualHeroYPosition = this.position.y)){
+        //     this.attack(hero, activeMap);
+        // }
 
         if (actualHeroXPosition > this.position.x) {
             this.moves(Direction.RIGHT, activeMap);
@@ -71,27 +81,27 @@ class Enemies extends Moveables {
 
     randomMove(activeMap) {
 
-       // if (this.chase === false) {
-            let random = Math.floor(Math.random() * 4) + 1;
-            switch (random) {
-                case 1:
-                    this.moves(Direction.RIGHT, activeMap);
-                    break;
+        // if (this.chase === false) {
+        let random = Math.floor(Math.random() * 4) + 1;
+        switch (random) {
+            case 1:
+                this.moves(Direction.RIGHT, activeMap);
+                break;
 
-                case 2:
-                    this.moves(Direction.LEFT, activeMap);
-                    break;
+            case 2:
+                this.moves(Direction.LEFT, activeMap);
+                break;
 
-                case 3:
-                    this.moves(Direction.UP, activeMap);
-                    break;
+            case 3:
+                this.moves(Direction.UP, activeMap);
+                break;
 
-                case 4:
-                    // console.log(this.activeMap)
-                    this.moves(Direction.DOWN, activeMap);
-                    break;
-            }
-       // }
+            case 4:
+                // console.log(this.activeMap)
+                this.moves(Direction.DOWN, activeMap);
+                break;
+        }
+        // }
 
         // console.log("RANDOM ESTA FUNCIONANDO?", random);
     }
@@ -105,7 +115,8 @@ class Enemies extends Moveables {
         //     this.engine.hero.position.plus(Direction.DOWN.asVector()).equals(this.position)
         // ){
         //     console.log("HEROI PERDE VIDA")
-        // } TODO: PQ O SINGLETON NÃO FUNCIONOU?
+        // }
+        // TODO: PQ O SINGLETON NÃO FUNCIONOU?
 
         // console.log((this.position.x - hero.position.x) + (this.position.y - hero.position.y));
         console.log("posicao do inimigo", this.position)
@@ -120,7 +131,6 @@ class Enemies extends Moveables {
 
             console.log("HEROI PERDE VIDA")
         }
-
 
 
     }

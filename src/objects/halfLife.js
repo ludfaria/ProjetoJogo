@@ -1,15 +1,14 @@
 import ImageTile from "../game/imageTile.js";
 
-class LifeBar extends ImageTile {
+class HalfLife extends ImageTile {
     constructor(position) {
         super(position);
     }
 
     get image() {
-        return "";
+        return "RedGreen.png";
     }
 
-
-    //é preciso retornar só uma imagem. faço 3 subclasses com cada imagem?
-
 }
+
+export default HalfLife;
