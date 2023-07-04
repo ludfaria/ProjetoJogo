@@ -17,6 +17,9 @@ import Enemies from "../objects/moveables/enemies/enemies.js";
 import skeleton from "../objects/moveables/enemies/skeleton.js";
 import statusBar from "../objects/statusBar.js";
 import StatusBar from "../objects/statusBar.js";
+import Fireball from "../objects/fireball.js";
+import fireball from "../objects/fireball.js";
+import position from "../util/position.js";
 
 
 class Engine {
@@ -57,11 +60,12 @@ class Engine {
         statusTiles.addFireball();
         statusTiles.addLifeBar();
 
+        //  statusTiles.dropItems(1);
 
         console.log(statusTiles.background)
         this.gui.addStatusImages(statusTiles.background);
         this.gui.addStatusImages(statusTiles.fireball);
-      //  this.gui.addStatusImages(statusTiles.collectedObjects);
+        //  this.gui.addStatusImages(statusTiles.collectedObjects);
         this.gui.addStatusImages(statusTiles.lifeBar);
 
 
@@ -92,8 +96,6 @@ class Engine {
 
         this.gui.start();
     }
-
-
 
 
     keyPressed(key) {
@@ -131,9 +133,27 @@ class Engine {
                 // console.log(this.activeMap)
                 this.hero.moves(Direction.DOWN, this.activeMap);
                 this.enemyTurn(listOfEnemies);
-                break
+                break;
+
+            case "1":
+                statusBar.getInstance().dropItems(0);
+                break;
+            case "2":
+                statusBar.getInstance().dropItems(1);
+                break;
+            case "3":
+                statusBar.getInstance().dropItems(2);
+                break;
+            case 'Space':
+                this.gui.showMessage('FireBALL!')
+                let fireball = new Fireball(this.hero.position.plus(Direction.UP.asVector()), new Direction("UP"), this.activeMap);
+                this.gui.addImage(fireball);
+                fireball.start();
+                break;
+
         }
 
+        // this.gui.addImage(fireball);
     }
 
     enemyTurn(listOfEnemies) {

@@ -1,10 +1,24 @@
 import ImageTile from "../game/imageTile.js";
 import Firetile from "../game/firetile.js";
+import Position from "../util/position.js";
+import Direction from "../util/direction.js";
 
 class Fireball extends Firetile {
 
-    constructor(position, direction) {
+    activeMap;
+    // isTileFree;
+
+    constructor(position, direction, activeMap) {
         super(position, direction);
+        this.activeMap = activeMap;
+        // this.isTileFree = isTileFree;
+    }
+
+    validateImpact(){
+        // let nextPosition = this.position.plus(Direction.UP.asVector())
+        let test = !this.activeMap.isTileFree(this.position);
+        console.log('validate isTileFree', test);
+        return test;
     }
 
     // A função

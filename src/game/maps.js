@@ -16,6 +16,8 @@ import Key from "../objects/notSolidObjects/key.js";
 import Equipments from "../objects/notSolidObjects/equipments.js";
 import Interface from "./interface.js";
 import StatusBar from "../objects/statusBar.js";
+import Door from "../objects/solidObjects/door.js";
+import OpenDoor from "../objects/solidObjects/openDoor.js";
 
 
 // selectRoom(stringRoom){
@@ -31,13 +33,8 @@ class Map {
     statusBar = StatusBar.getInstance();
 
     constructor() {
-// Interface.getInstance().removeImage(tile)
-        let activeRoom = this.selectRoom("2");
-
+        let activeRoom = this.selectRoom("1");
         this.initiateRoom(activeRoom);
-
-
-//
     }
 
     selectRoom(room) {
@@ -54,12 +51,40 @@ class Map {
         }
     }
 
+    extractDoorRules(roomRule) {
+        let doorRule = {
+            doorNumber: roomRule.charAt(2),
+            doorType: roomRule.charAt(4),
+            nextRoom: roomRule.charAt(10),
+            nextEntrance: roomRule.charAt(16),
+            keyToOpen: roomRule.charAt(21) || undefined,
+        }
+
+        // console.log('doorRule', doorRule);
+        return doorRule;
+    }
+
     initiateRoom(room) {
+
+        //pegar apenas as linhas com informaçoes das portas
+        let roomRules = room.split('\n').filter((line) => {
+            return line.startsWith("#") && line.length > 1
+        });
+
+        //extrair as informacoes de cada porta
+        roomRules.map((rule) => {
+            console.log('map - rule', rule);
+            //TODO: precisa salvar essas rules nas portas
+            let doorRule = this.extractDoorRules(rule);
+            console.log('map - doorRule', doorRule);
+        })
+
 
         let roomLines = room.split('\n').filter((line) => {
             return !line.startsWith("#")
-        });    //console.log(line)
-// para selecionar as linhas que não começam com #.
+        });
+
+        // para selecionar as linhas que não começam com #.
         //line é roomLines[i]. e tbm mesma coisa de linha. mas só existe nessa função do filter
 
         for (let y = 0; y < roomLines.length; y++) {
@@ -100,6 +125,19 @@ class Map {
                     case "k":
                         this.buildRoom.push(new Key(position));
                         break;
+                    case "0":
+                        this.buildRoom.push(new Door(position));
+                        break;
+                    case "1":
+                        this.buildRoom.push(new Door(position));
+                        break;
+                    case "2":
+                        this.buildRoom.push(new OpenDoor(position));
+                        break;
+
+
+
+
 
                 }
 
@@ -123,7 +161,6 @@ class Map {
     }
 
     isTileFree(newPosition) {
-        // console.log('isTileFree(newPosition)', newPosition);
 
         //OBS: Filter retorna um array, find retorna diretamente o objeto!
         // let tile = this.buildRoom.filter(function (tile) {
@@ -134,12 +171,6 @@ class Map {
         let tile = this.buildRoom.find(function (tile) {
             return tile.position.equals(newPosition)
         })
-
-
-        //   console.log('tile', tile);
-        //  console.log('type', typeof tile);
-        // console.log("isTileInstance", tile instanceof SolidObject)
-
 
         if (tile instanceof SolidObject) {
             return false;

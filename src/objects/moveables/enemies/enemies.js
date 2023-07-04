@@ -42,7 +42,8 @@ class Enemies extends Moveables {
             // this.colisao(hero);
         }
 
-        if (distance === 1){
+        else if (distance === 1){    // se não tiver o else esse if vira condição do outro else. e o inimigo da dois passos
+            //e anda na diagonal. preciso melhorar o movimento de chase pra não virar trenzinho da alegria
             this.attack(hero, activeMap); // coloquei o ataque no lugar certo???
 
         } else {

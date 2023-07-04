@@ -6,6 +6,7 @@ import engine from "../../game/engine.js";
 import Moveables from "./moveables.js";
 import Interface from "../../game/interface.js";
 import Position from "../../util/position.js";
+import StatusBar from "../statusBar.js";
 
 class Hero extends Moveables {
     attackPower = 2;
@@ -49,11 +50,17 @@ class Hero extends Moveables {
 
     takeDamage(attackPower, map) {
         this.lifePoints = this.lifePoints - attackPower;
+        StatusBar.getInstance().loseLifeBar(attackPower)
         console.log("fui atacado. minha vida agora é", this.lifePoints);
         // this.resetPosition()
         if (this.lifePoints <= 0) {
             console.log("MORRI");
             Interface.getInstance().removeImage(this)
+            Interface.getInstance().addImage(this)
+            Interface.getInstance().removeImage(this)
+            Interface.getInstance().addImage(this)
+            Interface.getInstance().removeImage(this)
+
             Interface.getInstance().showMessage("!! GAME OVER !!")
             // map.disappearTile(this.position);
         }

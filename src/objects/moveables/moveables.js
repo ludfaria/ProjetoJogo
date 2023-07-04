@@ -32,10 +32,11 @@ class Moveables extends SolidObject {
         } else {
 
             if (tile instanceof Moveables) {
-              //  this.position = this.position;
+
                 this.attack(tile, map)//se for instancia de moveable, acontece a colisão
             }
-        }
+
+       }
 
             // let tile = map.buildRoom.find(function (tile) { //PQ .BUILDROOM?
             //     return tile.position.equals(newPosition)
