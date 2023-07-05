@@ -6,6 +6,8 @@ import hero from "../hero.js";
 
 
 class Skeleton extends Enemies {
+    attackPower = 1;
+    lifePoints = 3
     constructor(position) {
         super(position);
     }

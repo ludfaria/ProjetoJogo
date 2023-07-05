@@ -3,15 +3,14 @@ import SolidObject from "../../solidObjects/solidObject.js";
 import Direction from "../../../util/direction.js";
 import Moveables from "../moveables.js";
 import Position from "../../../util/position.js";
+import Hero from "../hero.js";
 
 
 class Enemies extends Moveables {
-    engine = Engine.getInstance();
     chase = false;
 
     constructor(position) {
         super(position);
-        console.log("engine on constructor", this.engine);
     }
 
 
@@ -22,9 +21,7 @@ class Enemies extends Moveables {
     enemyBehaviour(hero, activeMap) {
 
         // console.log('hero on enemy', hero.position)
-        //
-        // console.log("engine", this.engine);
-        // console.log("engine", this.engine.hero);
+
 
         let a = hero.position.x - this.position.x;
         let b = hero.position.y - this.position.y;
@@ -44,7 +41,12 @@ class Enemies extends Moveables {
 
         else if (distance === 1){    // se não tiver o else esse if vira condição do outro else. e o inimigo da dois passos
             //e anda na diagonal. preciso melhorar o movimento de chase pra não virar trenzinho da alegria
+            console.log('enemies - hero', hero);
+            console.log('enemies - Hero.getInstance()', Hero.getInstance());
+
+
             this.attack(hero, activeMap); // coloquei o ataque no lugar certo???
+            // this.attack(hero, activeMap); // coloquei o ataque no lugar certo???
 
         } else {
             console.log("inimigo a andar de forma aleatória")
@@ -54,30 +56,35 @@ class Enemies extends Moveables {
     }
 
     chaseHero(hero, activeMap) {
-        let actualHeroXPosition = hero.position.x;
-        let actualHeroYPosition = hero.position.y;
+        // let hero.position.x = hero.position.x;
+        // let actualHeroYPosition = hero.position.y;
         console.log('CHaseHero -> activeMap:', activeMap);
 
 
-        // if ((actualHeroXPosition = this.position.x) && (actualHeroYPosition = this.position.y)){
+        // if ((hero.position.x = this.position.x) && (actualHeroYPosition = this.position.y)){
         //     this.attack(hero, activeMap);
         // }
 
-        if (actualHeroXPosition > this.position.x) {
-            this.moves(Direction.RIGHT, activeMap);
-            return;
-        }
-        if (actualHeroXPosition < this.position.x) {
-            this.moves(Direction.LEFT, activeMap);
-            return;
-        }
-        if (actualHeroYPosition < this.position.y) {
-            this.moves(Direction.UP, activeMap);
-            return;
-        }
-        if (actualHeroYPosition > this.position.y) {
-            this.moves(Direction.DOWN, activeMap);
-            return;
+        if ( (hero.position.x - this.position.x) > (hero.position.y - this.position.y)) {
+
+            if (hero.position.x > this.position.x) {
+                this.moves(Direction.RIGHT, activeMap);
+                return;
+            }
+            if (hero.position.x < this.position.x) {
+                this.moves(Direction.LEFT, activeMap);
+                return;
+            }
+        } else {
+
+            if (hero.position.y < this.position.y) {
+                this.moves(Direction.UP, activeMap);
+                return;
+            }
+            if (hero.position.y > this.position.y) {
+                this.moves(Direction.DOWN, activeMap);
+                return;
+            }
         }
 
     }

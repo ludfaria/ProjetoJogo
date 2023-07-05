@@ -18,13 +18,11 @@ import Interface from "./interface.js";
 import StatusBar from "../objects/statusBar.js";
 import Door from "../objects/solidObjects/door.js";
 import OpenDoor from "../objects/solidObjects/openDoor.js";
+import statusBar from "../objects/statusBar.js";
+import Thief from "../objects/moveables/enemies/thief.js";
+import Engine from "./engine.js";
 
-
-// selectRoom(stringRoom){
-//
-// }
-
-const initialRoom = "0";
+const initialRoom = "2";
 
 
 class Map {
@@ -32,8 +30,17 @@ class Map {
     heroPosition;
     statusBar = StatusBar.getInstance();
 
+    static #instance;
+
+    static getInstance() {
+        if (Map.#instance === undefined) {
+            Map.#instance = new Map();
+        }
+        return Map.#instance;
+    }
+
     constructor() {
-        let activeRoom = this.selectRoom("1");
+        let activeRoom = this.selectRoom(initialRoom);
         this.initiateRoom(activeRoom);
     }
 
@@ -48,45 +55,62 @@ class Map {
             case "2":
                 return room2;
                 break;
+            default:
+                return room0;
+                break;
         }
     }
 
-    extractDoorRules(roomRule) {
-        let doorRule = {
-            doorNumber: roomRule.charAt(2),
-            doorType: roomRule.charAt(4),
-            nextRoom: roomRule.charAt(10),
-            nextEntrance: roomRule.charAt(16),
-            keyToOpen: roomRule.charAt(21) || undefined,
-        }
+    // changeRoom(door) {
+    //     console.log('antes de trocar o room', this.buildRoom)
+    //     let newRoom = this.selectRoom(door.doorRule.nextRoom);
+    //     this.initiateRoom(newRoom);
+    //     console.log('depois de trocar o room', this.buildRoom);
+    //
+    //     let newHeroDoor = this.buildRoom.find((tile) => {
+    //       return tile.doorRule !== undefined && tile.doorRule.doorNumber === door.doorRule.nextEntrance;
+    //     })
+    //
+    //     console.log('newHeroDoor', newHeroDoor);
+    //
+    //     Engine.getInstance().updateMap(this.buildRoom, newHeroDoor.position);
+    // }
 
-        // console.log('doorRule', doorRule);
-        return doorRule;
-    }
+    // extractDoorRules(roomRule) {
+    //     let doorRule = {
+    //         doorNumber: roomRule.charAt(2),
+    //         doorType: roomRule.charAt(4),
+    //         nextRoom: roomRule.charAt(10),
+    //         nextEntrance: roomRule.charAt(16),
+    //         keyToOpen: roomRule.charAt(21) || undefined,
+    //     }
+    //
+    //     // console.log('doorRule', doorRule);
+    //     return doorRule;
+    // }
 
     initiateRoom(room) {
 
         //pegar apenas as linhas com informaçoes das portas
-        let roomRules = room.split('\n').filter((line) => {
-            return line.startsWith("#") && line.length > 1
-        });
-
-        //extrair as informacoes de cada porta
-        roomRules.map((rule) => {
-            console.log('map - rule', rule);
-            //TODO: precisa salvar essas rules nas portas
-            let doorRule = this.extractDoorRules(rule);
-            console.log('map - doorRule', doorRule);
-        })
+        // let roomRules = room.split('\n').filter((line) => {
+        //     return line.startsWith("#") && line.length > 1
+        // });
+        //
+        // let allDoorRules= [];
+        // //extrair as informacoes de cada porta
+        // roomRules.map((rule) => {
+        //     let doorRule = this.extractDoorRules(rule);
+        //     allDoorRules.push(doorRule);
+        // })
 
 
         let roomLines = room.split('\n').filter((line) => {
             return !line.startsWith("#")
         });
 
+
         // para selecionar as linhas que não começam com #.
         //line é roomLines[i]. e tbm mesma coisa de linha. mas só existe nessa função do filter
-
         for (let y = 0; y < roomLines.length; y++) {
             let linha = roomLines[y];
             //linha é uma string apenaxxxx
@@ -125,19 +149,21 @@ class Map {
                     case "k":
                         this.buildRoom.push(new Key(position));
                         break;
+                    case "T":
+                        this.buildRoom.push(new Thief(position));
+                        break;
+
                     case "0":
                         this.buildRoom.push(new Door(position));
                         break;
+
                     case "1":
                         this.buildRoom.push(new Door(position));
                         break;
+
                     case "2":
                         this.buildRoom.push(new OpenDoor(position));
                         break;
-
-
-
-
 
                 }
 
@@ -145,15 +171,22 @@ class Map {
         }
     }
 
-    addHero(heroTile) {
-        let tile = this.buildRoom.find(function (tile) {
-            return tile.position.equals(heroTile.position)
-        })
-        let indexToChange = this.buildRoom.indexOf(tile);
-        this.buildRoom[indexToChange] = heroTile;
-        console.log('hero tile:', this.buildRoom[indexToChange])
+    // addHero(heroTile) {
+    //     let tile = this.buildRoom.find(function (tile) {
+    //         return tile.position.equals(heroTile.position)
+    //     })
+    //     let indexToChange = this.buildRoom.indexOf(tile);
+    //     this.buildRoom[indexToChange] = heroTile;
+    //     console.log('hero tile:', this.buildRoom[indexToChange])
+    //
+    // }
 
-    }
+    // case "2":
+    //     let doorRule2 = allDoorRules.find(function (rule) {
+    //     return rule.doorNumber === '2';
+    // })
+    // this.buildRoom.push(new OpenDoor(position, doorRule2));
+    // break;
 
 
     get buildRoom() {
@@ -191,7 +224,7 @@ class Map {
         if (tile instanceof Meat) {
             this.buildRoom.splice(indexToRemove, 1);
             Interface.getInstance().removeImage(tile)
-            Interface.getInstance().showMessage("Recuperou vida")
+            Hero.getInstance().eatMeat();
 
         }
 
@@ -199,7 +232,9 @@ class Map {
 
             this.statusBar.addItems(tile);
             this.buildRoom.splice(indexToRemove, 1);
-            Interface.getInstance().addStatusImages(this.statusBar.inventory);
+
+
+            console.log(" INVENTARIO", this.statusBar.inventory)
 
             Interface.getInstance().removeImage(tile)
             Interface.getInstance().showMessage("Novo item")

@@ -2,16 +2,20 @@ import SolidObject from "../solidObjects/solidObject.js";
 import Meat from "../notSolidObjects/meat.js";
 import NotSolidObjects from "../notSolidObjects/notSolidObjects.js";
 import Hero from "./hero.js";
+import OpenDoor from "../solidObjects/openDoor.js";
 
 class Moveables extends SolidObject {
     attackPower = 1;
-    lifePoints = 4;
+    lifePoints = 2;
 
     constructor(position) {
         super(position);
     }
 
 
+    changeToNewPosition(newHeroPosition) {
+        this.position = newHeroPosition;
+    }
     moves(direction, map) {
 
         let newPosition = this.position.plus(direction.asVector());
@@ -26,6 +30,10 @@ class Moveables extends SolidObject {
             if (tile instanceof NotSolidObjects && this instanceof Hero) {
                 map.disappearTile(newPosition);
             }
+            // else if (tile instanceof OpenDoor) {
+            //     map.changeRoom(tile);
+            //     return;
+            // }
             //Todos podem se mover
             this.position = newPosition;
 

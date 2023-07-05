@@ -2,23 +2,34 @@ import ImageTile from "../game/imageTile.js";
 import Firetile from "../game/firetile.js";
 import Position from "../util/position.js";
 import Direction from "../util/direction.js";
+import Moveables from "./moveables/moveables.js";
 
 class Fireball extends Firetile {
 
     activeMap;
-    // isTileFree;
+    attackPower = 3;
 
     constructor(position, direction, activeMap) {
         super(position, direction);
         this.activeMap = activeMap;
-        // this.isTileFree = isTileFree;
     }
 
     validateImpact(){
         // let nextPosition = this.position.plus(Direction.UP.asVector())
-        let test = !this.activeMap.isTileFree(this.position);
-        console.log('validate isTileFree', test);
-        return test;
+        let impact = !this.activeMap.isTileFree(this.position);
+        console.log('validate isTileFree', impact);
+
+        if(impact) {
+            let target = this.activeMap.buildRoom.find((tile) => {
+                return tile.position.equals(this.position);
+            })
+
+            if (target instanceof Moveables) {
+                console.log('fireball target', target);
+                target.takeDamage(this.attackPower, this.activeMap);
+            }
+        }
+        return impact;
     }
 
     // A função

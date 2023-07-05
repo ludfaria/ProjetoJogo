@@ -2,11 +2,11 @@ export default `
 #
 # 0 D room1.txt 2
 #
-WWWW0WWWWW
+WWWW2WWWWW
 W        W
 W  S     W
 WWWWW    W
-W   W    W
+0   W    W
 W   W  WWW
 W  H     W
 W        W

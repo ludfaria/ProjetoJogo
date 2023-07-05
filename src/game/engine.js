@@ -20,13 +20,17 @@ import StatusBar from "../objects/statusBar.js";
 import Fireball from "../objects/fireball.js";
 import fireball from "../objects/fireball.js";
 import position from "../util/position.js";
+import Hammer from "../objects/notSolidObjects/hammer.js";
+import Key from "../objects/notSolidObjects/key.js";
+import hammer from "../objects/notSolidObjects/hammer.js";
 
 
 class Engine {
     gui = Interface.getInstance();
     hero = Hero.getInstance();
     tiles = [];
-    activeMap;
+    activeMap = Map.getInstance();
+    lastDirections = Direction.UP;
 
 
     static #instance;
@@ -60,19 +64,17 @@ class Engine {
         statusTiles.addFireball();
         statusTiles.addLifeBar();
 
-        //  statusTiles.dropItems(1);
 
         console.log(statusTiles.background)
         this.gui.addStatusImages(statusTiles.background);
         this.gui.addStatusImages(statusTiles.fireball);
-        //  this.gui.addStatusImages(statusTiles.collectedObjects);
         this.gui.addStatusImages(statusTiles.lifeBar);
 
 
-        let mapRoom = new Map();
-        this.tiles = mapRoom.buildRoom;
+        // let mapRoom = new Map();
+        this.tiles = this.activeMap.buildRoom;
 
-        this.activeMap = mapRoom;
+        // this.activeMap = mapRoom;
 
 
         this.gui.addImages(this.tiles);
@@ -80,7 +82,7 @@ class Engine {
         //TODO: Arrumar esse new hero
 
         // this.hero = new Hero(mapRoom.heroPosition);
-        this.hero = new Hero(new Position(4, 6));
+        // this.hero = new Hero(new Position(4, 6));
         // this.activeMap.addHero(this.hero);
 
 
@@ -96,6 +98,25 @@ class Engine {
 
         this.gui.start();
     }
+
+    // updateMap(newTiles, newHeroPosition) {
+    //     console.log(`this.tiles.length`,this.tiles.length)
+    //     console.log(`this.tiles`,this.tiles)
+    //     while (this.tiles.length > 0) {
+    //         this.gui.removeImage(this.tiles[this.tiles.length - 1]);
+    //         this.tiles.pop();
+    //     }
+    //     console.log(`this.tiles.length`,this.tiles.length)
+    //     this.tiles = []
+    //     this.gui.addImages(newTiles);
+    //     // this.tiles = newTiles;
+    //     this.gui.update();
+    //
+    //     console.log('hero position - before', this.hero.position);
+    //     this.hero.changeToNewPosition(newHeroPosition);
+    //     console.log('hero position - after', this.hero.position);
+    //     this.gui.update();
+    // }
 
 
     keyPressed(key) {
@@ -117,43 +138,70 @@ class Engine {
             case "ArrowRight":
                 this.hero.moves(Direction.RIGHT, this.activeMap);
                 this.enemyTurn(listOfEnemies);
+                this.lastDirections = Direction.RIGHT;
                 break;
 
             case "ArrowLeft":
                 this.hero.moves(Direction.LEFT, this.activeMap);
                 this.enemyTurn(listOfEnemies);
+                this.lastDirections = Direction.LEFT;
                 break;
 
             case "ArrowUp":
                 this.hero.moves(Direction.UP, this.activeMap);
                 this.enemyTurn(listOfEnemies);
+                this.lastDirections = Direction.UP;
                 break;
 
             case "ArrowDown":
                 // console.log(this.activeMap)
                 this.hero.moves(Direction.DOWN, this.activeMap);
-                this.enemyTurn(listOfEnemies);
+                this.enemyTurn(listOfEnemies)
+                this.lastDirections = Direction.DOWN;
                 break;
 
             case "1":
-                statusBar.getInstance().dropItems(0);
+                let deletedItemTypeCase1 = statusBar.getInstance().dropItems(0);
+                this.createNewItemOnFloor(deletedItemTypeCase1)
                 break;
+
             case "2":
-                statusBar.getInstance().dropItems(1);
+                let deletedItemTypeCase2 = statusBar.getInstance().dropItems(1);
+                this.createNewItemOnFloor(deletedItemTypeCase2)
                 break;
+
             case "3":
-                statusBar.getInstance().dropItems(2);
+                let deletedItemTypeCase3 = statusBar.getInstance().dropItems(2);
+                this.createNewItemOnFloor(deletedItemTypeCase3);
                 break;
+
             case 'Space':
-                this.gui.showMessage('FireBALL!')
-                let fireball = new Fireball(this.hero.position.plus(Direction.UP.asVector()), new Direction("UP"), this.activeMap);
-                this.gui.addImage(fireball);
-                fireball.start();
+                if (StatusBar.getInstance().fireball.length > 0) {
+                    this.gui.showMessage('FireBALL!')
+                    let fireball = new Fireball(this.hero.position, this.lastDirections, this.activeMap);
+                    this.gui.addImage(fireball);
+                    StatusBar.getInstance().removeFireball();
+                    fireball.start();
+                } else {
+                    this.gui.showMessage('Estou sem Fogo!')
+                }
                 break;
 
         }
 
         // this.gui.addImage(fireball);
+    }
+
+    createNewItemOnFloor(deletedItemType) {
+        if (deletedItemType === 'hammer') {
+            let hammer = new Hammer(this.hero.position);
+            this.gui.addImage(hammer);
+            this.activeMap.buildRoom.push(hammer)
+        } else if (deletedItemType === 'key'){
+            let key = new Key(this.hero.position);
+            this.gui.addImage(key, this.hero.position);
+            this.activeMap.buildRoom.push(key)
+        }
     }
 
     enemyTurn(listOfEnemies) {

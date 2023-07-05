@@ -7,9 +7,15 @@ import Moveables from "./moveables.js";
 import Interface from "../../game/interface.js";
 import Position from "../../util/position.js";
 import StatusBar from "../statusBar.js";
+import LifeRed from "../lifeRed.js";
+import LifeGreen from "../lifeGreen.js";
+import halfLife from "../halfLife.js";
+import HalfLife from "../halfLife.js";
+import statusBar from "../statusBar.js";
 
 class Hero extends Moveables {
-    attackPower = 2;
+    attackPower = 1;
+    fullTotalLife = 8;
     lifePoints = 8; //deveria estar no construtor?
     initialPosition;
 
@@ -18,10 +24,11 @@ class Hero extends Moveables {
 
     static getInstance() {
         if (Hero.#instance === undefined) {
-            Hero.#instance = new Hero();
+            Hero.#instance = new Hero(new Position(4, 6));
         }
         return Hero.#instance;
     }
+
     constructor(position) {
         super(position);
         this.initialPosition = position
@@ -36,7 +43,7 @@ class Hero extends Moveables {
         this.position = this.initialPosition;
     }
 
-    addPowerEquipment(power){
+    addPowerEquipment(power) {
         // this.attackPower += power;
         this.attackPower = this.attackPower + power;
         Interface.getInstance().showMessage("It's hammer time!");
@@ -56,15 +63,17 @@ class Hero extends Moveables {
         if (this.lifePoints <= 0) {
             console.log("MORRI");
             Interface.getInstance().removeImage(this)
-            Interface.getInstance().addImage(this)
-            Interface.getInstance().removeImage(this)
-            Interface.getInstance().addImage(this)
-            Interface.getInstance().removeImage(this)
 
             Interface.getInstance().showMessage("!! GAME OVER !!")
             // map.disappearTile(this.position);
         }
     }
-}
 
-export default Hero;
+    eatMeat() {
+        this.lifePoints = this.fullTotalLife;
+        StatusBar.getInstance().addLifeBar();
+        Interface.getInstance().showMessage("Recuperou vida")
+        Interface.getInstance().addStatusImages(StatusBar.getInstance().lifeBar);
+    }
+}
+    export default Hero;

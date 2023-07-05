@@ -7,8 +7,8 @@ export default `
 # k key2
 #
 WWWW0WWWWW
-W        W
-W        W
+W       TW
+W  h     W
 W   B    W
 W        W
 W      WWW

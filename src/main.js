@@ -2,7 +2,8 @@ import Engine from "./game/engine.js";
 import Interface from "./game/interface.js";
 (() => {
     const gui = Interface.getInstance();
-    const engine = new Engine();
+    // const engine = new Engine();
+    const engine = Engine.getInstance();
     engine.init();
     document.addEventListener("keydown", (e) => {
         let key = e.key;
