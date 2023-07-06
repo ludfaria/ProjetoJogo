@@ -14,10 +14,6 @@ class Skeleton extends Enemies {
     }
 
 
-    movement(direction) {
-        return this.position = this.position.plus(direction.asVector());
-    }
-
 }
 
 

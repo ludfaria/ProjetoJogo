@@ -2,35 +2,27 @@ import Position from "../util/position.js";
 import Floor from "../objects/floor.js";
 import Hero from "../objects/moveables/hero.js";
 import Interface from "./interface.js";
-import Door from "../objects/solidObjects/door.js";
-import Wall from "../objects/solidObjects/wall.js";
-import OpenDoor from "../objects/solidObjects/openDoor.js";
-import room0 from "../../rooms/room0.js";
-import Skeleton from "../objects/moveables/enemies/skeleton.js";
+import Door from "../objects/door.js";
 import Direction from "../util/direction.js";
-import Vector2d from "../util/vector2d.js";
-import solidObject from "../objects/solidObjects/solidObject.js";
-import wall from "../objects/solidObjects/wall.js";
 import Map from "./maps.js";
-import hero from "../objects/moveables/hero.js";
 import Enemies from "../objects/moveables/enemies/enemies.js";
-import skeleton from "../objects/moveables/enemies/skeleton.js";
 import statusBar from "../objects/statusItems/statusBar.js";
 import StatusBar from "../objects/statusItems/statusBar.js";
 import Fireball from "../objects/fireball.js";
-import fireball from "../objects/fireball.js";
-import position from "../util/position.js";
 import Hammer from "../objects/notSolidObjects/hammer.js";
 import Key from "../objects/notSolidObjects/key.js";
-import hammer from "../objects/notSolidObjects/hammer.js";
 
 
 class Engine {
     gui = Interface.getInstance();
     hero = Hero.getInstance();
-    tiles = [];
-    activeMap;
     lastDirections = Direction.UP;
+    tiles = [];
+    room0 = new Map('0');
+    room1 = new Map('1');
+    room2 = new Map('2');
+    activeMap;
+    currentRoomNumber;
 
 
     static #instance;
@@ -64,15 +56,14 @@ class Engine {
         statusTiles.addLifeBar();
 
 
-        console.log(statusTiles.background)
         this.gui.addStatusImages(statusTiles.background);
         this.gui.addStatusImages(statusTiles.fireball);
         this.gui.addStatusImages(statusTiles.lifeBar);
 
 
-        let mapRoom = new Map();
-        this.activeMap = mapRoom;
+        this.activeMap = this.room0;
         this.tiles = this.activeMap.buildRoom;
+        this.currentRoomNumber = '0';
 
 
         this.gui.addImages(this.tiles);
@@ -81,40 +72,60 @@ class Engine {
         this.gui.start();
     }
 
-    // updateMap(newTiles, newHeroPosition) {
-    //     console.log(`this.tiles.length`,this.tiles.length)
-    //     console.log(`this.tiles`,this.tiles)
-    //     piwhile (this.tiles.length > 0) {
-    //         this.gui.removeImage(this.tiles[this.tiles.length - 1]);
-    //         this.tiles.pop();
-    //     }
-    //     console.log(`this.tiles.length`,this.tiles.length)
-    //     this.tiles = []
-    //     this.gui.addImages(newTiles);
-    //     // this.tiles = newTiles;
-    //     this.gui.update();
-    //
-    //     console.log('hero position - before', this.hero.position);
-    //     this.hero.changeToNewPosition(newHeroPosition);
-    //     console.log('hero position - after', this.hero.position);
-    //     this.gui.update();
-    // }
+    updateMap(newRoom, nextDoorNumber) {
+
+        let temptiles = this.activeMap.buildRoom.splice(0);
+
+        temptiles.map((tile) => {
+            this.gui.removeImage(tile);
+            this.activeMap.buildRoom.push(tile)
+        })
+
+
+        switch (newRoom) {
+            case '0':
+                this.activeMap = this.room0;
+                this.currentRoomNumber = '0';
+                break
+            case '1':
+                this.activeMap = this.room1;
+                this.currentRoomNumber = '1';
+                break
+            case '2':
+                this.activeMap = this.room2;
+                this.currentRoomNumber = '2';
+                break
+        }
+
+
+        this.gui.addImages(this.activeMap.buildRoom);
+        this.gui.update();
+
+
+
+        let newHeroPosition = this.activeMap.buildRoom.find(function (tile) {
+            if (tile instanceof Door) {
+
+                return tile.doorNumber === nextDoorNumber;
+            }
+        })
+
+
+
+        this.gui.removeImage(this.hero);
+        this.hero.changeToNewPosition(newHeroPosition.position || new Position(3, 3));
+        this.gui.update();
+    }
+
 
 
     keyPressed(key) {
         console.log("User pressed key", key);
 
-        let listOfEnemies = this.tiles.filter(function (tile) {
+        let listOfEnemies = this.activeMap.buildRoom.filter(function (tile) {
             return tile instanceof Enemies;
         })
-        // for (let enemy of listOfEnemies) {
-        //
-        //     // enemy.randomMove(this.activeMap);
-        //     enemy.enemyBehaviour(this.hero, this.activeMap);
-        //     //  enemy.colisao(this.hero);
-        //
-        //
-        // }
+
 
         switch (key) {
             case "ArrowRight":
@@ -171,7 +182,7 @@ class Engine {
 
         }
 
-        // this.gui.addImage(fireball);
+
     }
 
     createNewItemOnFloor(deletedItemType) {
@@ -180,7 +191,7 @@ class Engine {
             this.gui.addImage(hammer);
             this.activeMap.buildRoom.push(hammer)
 
-        } else if (deletedItemType === 'key'){
+        } else if (deletedItemType === 'key') {
             let key = new Key(this.hero.position);
             this.gui.addImage(key, this.hero.position);
             this.activeMap.buildRoom.push(key)

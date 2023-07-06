@@ -38,7 +38,7 @@ class Hero extends Moveables {
 
         this.attackPower = this.attackPower + power;
         Interface.getInstance().showMessage("It's hammer time!");
-        console.log('hero power', this.attackPower);
+
     }
 
     losePowerEquipment(power) {
@@ -47,6 +47,7 @@ class Hero extends Moveables {
 
 
     takeDamage(attackPower, map) {
+
         this.lifePoints = this.lifePoints - attackPower;
         StatusBar.getInstance().loseLifeBar(attackPower)
         console.log("fui atacado. minha vida agora é", this.lifePoints);

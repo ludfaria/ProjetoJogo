@@ -1,11 +1,11 @@
-import ImageTile from "../../game/imageTile.js";
+import ImageTile from "../game/imageTile.js";
 
 class Door extends ImageTile {
 
-    // doorRule;
-    constructor(position) {
+    doorNumber;
+    constructor(position, doorNumber) {
         super(position);
-        // this.doorRule = doorRule;
+        this.doorNumber = doorNumber;
     }
 
     get image() {

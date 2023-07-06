@@ -1,4 +1,3 @@
-import ImageTile from "./imageTile.js";
 import SolidObject from "../objects/solidObjects/solidObject.js";
 import room0 from "../../rooms/room0.js";
 import Position from "../util/position.js";
@@ -16,10 +15,10 @@ import Key from "../objects/notSolidObjects/key.js";
 import Equipments from "../objects/notSolidObjects/equipments.js";
 import Interface from "./interface.js";
 import StatusBar from "../objects/statusItems/statusBar.js";
-import Door from "../objects/solidObjects/door.js";
-import OpenDoor from "../objects/solidObjects/openDoor.js";
+import OpenDoor from "../objects/openDoor.js";
 import Thief from "../objects/moveables/enemies/thief.js";
 import Engine from "./engine.js";
+import CloseDoor from "../objects/closeDoor.js";
 
 const initialRoom = "2";
 
@@ -38,8 +37,8 @@ class Map {
         return Map.#instance;
     }
 
-    constructor() {
-        let activeRoom = this.selectRoom(initialRoom);
+    constructor(room) {
+        let activeRoom = this.selectRoom(room || initialRoom);
         this.initiateRoom(activeRoom);
     }
 
@@ -60,64 +59,69 @@ class Map {
         }
     }
 
-    // changeRoom(door) {
-    //     console.log('antes de trocar o room', this.buildRoom)
-    //     let newRoom = this.selectRoom(door.doorRule.nextRoom);
-    //     this.initiateRoom(newRoom);
-    //     console.log('depois de trocar o room', this.buildRoom);
-    //
-    //     let newHeroDoor = this.buildRoom.find((tile) => {
-    //       return tile.doorRule !== undefined && tile.doorRule.doorNumber === door.doorRule.nextEntrance;
-    //     })
-    //
-    //     console.log('newHeroDoor', newHeroDoor);
-    //
-    //     Engine.getInstance().updateMap(this.buildRoom, newHeroDoor.position);
-    // }
+    changeRoom(door) {
 
-    // extractDoorRules(roomRule) {
-    //     let doorRule = {
-    //         doorNumber: roomRule.charAt(2),
-    //         doorType: roomRule.charAt(4),
-    //         nextRoom: roomRule.charAt(10),
-    //         nextEntrance: roomRule.charAt(16),
-    //         keyToOpen: roomRule.charAt(21) || undefined,
-    //     }
-    //
-    //     // console.log('doorRule', doorRule);
-    //     return doorRule;
-    // }
+        let currentRoom = Engine.getInstance().currentRoomNumber;
+        let nextDoorNumber;
+        let nextRoom;
+
+        if (currentRoom === '0') {
+            if (door.doorNumber === '0') {
+                if (StatusBar.getInstance().keysToEscape()) {
+
+                    Interface.getInstance().showMessage('Parabens! Está livre!');
+                } else {
+                    Interface.getInstance().showMessage('Porta trancada com 2 cadeados!');
+                }
+                return;
+            }
+            if (door.doorNumber === '2') {
+                nextDoorNumber = '2';
+                nextRoom = '1';
+
+            }
+        } else if (currentRoom === '1') {
+            if (door.doorNumber === '0') {
+                nextDoorNumber = '1';
+                nextRoom = '2';
+            }
+            if (door.doorNumber === '1') {
+                nextDoorNumber = '0';
+                nextRoom = '2';
+
+            }
+            if (door.doorNumber === '2') {
+                nextDoorNumber = '2';
+                nextRoom = '0';
+
+            }
+        } else if (currentRoom === '2') {
+            if (door.doorNumber === '0') {
+                nextDoorNumber = '1';
+                nextRoom = '1';
+            }
+            if (door.doorNumber === '1') {
+                nextDoorNumber = '0';
+                nextRoom = '1';
+            }
+
+        }
+
+        Engine.getInstance().updateMap(nextRoom, nextDoorNumber);
+    }
+
 
     initiateRoom(room) {
-
-        //pegar apenas as linhas com informaçoes das portas
-        // let roomRules = room.split('\n').filter((line) => {
-        //     return line.startsWith("#") && line.length > 1
-        // });
-        //
-        // let allDoorRules= [];
-        // //extrair as informacoes de cada porta
-        // roomRules.map((rule) => {
-        //     let doorRule = this.extractDoorRules(rule);
-        //     allDoorRules.push(doorRule);
-        // })
-
 
         let roomLines = room.split('\n').filter((line) => {
             return !line.startsWith("#")
         });
 
 
-        // para selecionar as linhas que não começam com #.
-        //line é roomLines[i]. e tbm mesma coisa de linha. mas só existe nessa função do filter
         for (let y = 0; y < roomLines.length; y++) {
             let linha = roomLines[y];
-            //linha é uma string apenaxxxx
-
             let caractere = linha.split("");
-            //caractere é um array de arrays, aparentemente
-            console.log(linha)
-            console.log(caractere);
+
             for (let x = 0; x < caractere.length; x++) {
                 let char = caractere[x];
                 let position = new Position(x, y);
@@ -131,7 +135,6 @@ class Map {
                         break;
                     case "H":
                         this.heroPosition = position;
-                        // this.buildRoom.push(new Hero(position));
                         break;
                     case "B":
                         this.buildRoom.push(new Bat(position));
@@ -151,17 +154,14 @@ class Map {
                     case "T":
                         this.buildRoom.push(new Thief(position));
                         break;
-
                     case "0":
-                        this.buildRoom.push(new Door(position));
+                        this.buildRoom.push(new CloseDoor(position, '0'));
                         break;
-
                     case "1":
-                        this.buildRoom.push(new Door(position));
+                        this.buildRoom.push(new CloseDoor(position, '1'));
                         break;
-
                     case "2":
-                        this.buildRoom.push(new OpenDoor(position));
+                        this.buildRoom.push(new OpenDoor(position, '2'));
                         break;
 
                 }
@@ -170,35 +170,12 @@ class Map {
         }
     }
 
-    // addHero(heroTile) {
-    //     let tile = this.buildRoom.find(function (tile) {
-    //         return tile.position.equals(heroTile.position)
-    //     })
-    //     let indexToChange = this.buildRoom.indexOf(tile);
-    //     this.buildRoom[indexToChange] = heroTile;
-    //     console.log('hero tile:', this.buildRoom[indexToChange])
-    //
-    // }
-
-    // case "2":
-    //     let doorRule2 = allDoorRules.find(function (rule) {
-    //     return rule.doorNumber === '2';
-    // })
-    // this.buildRoom.push(new OpenDoor(position, doorRule2));
-    // break;
-
 
     get buildRoom() {
         return this.buildRoom;
     }
 
     isTileFree(newPosition) {
-
-        //OBS: Filter retorna um array, find retorna diretamente o objeto!
-        // let tile = this.buildRoom.filter(function (tile) {
-        //     return tile.position.equals(newPosition);
-        //
-        // })
 
         let tile = this.buildRoom.find(function (tile) {
             return tile.position.equals(newPosition)
@@ -218,32 +195,33 @@ class Map {
             return tile.position.equals(newPosition)
         })
         let indexToRemove = this.buildRoom.indexOf(tile);
-        console.log('disappearTile tile:', this.buildRoom[indexToRemove])
+
 
         if (tile instanceof Meat) {
             this.buildRoom.splice(indexToRemove, 1);
             Interface.getInstance().removeImage(tile)
             Hero.getInstance().eatMeat();
-
         }
 
         if (tile instanceof Equipments) {
 
-            this.statusBar.addItems(tile);
-            this.buildRoom.splice(indexToRemove, 1);
+            if (StatusBar.getInstance().inventory.length < 3) {
+                this.statusBar.addItems(tile);
+                this.buildRoom.splice(indexToRemove, 1);
 
+                Interface.getInstance().removeImage(tile)
+                Interface.getInstance().showMessage("Novo item")
 
-            console.log(" INVENTARIO", this.statusBar.inventory)
-
-            Interface.getInstance().removeImage(tile)
-            Interface.getInstance().showMessage("Novo item")
+            } else {
+                Interface.getInstance().showMessage('Inventário está cheio!')
+            }
 
         }
 
         if (tile instanceof Enemies) {
             this.buildRoom.splice(indexToRemove, 1);
             Interface.getInstance().removeImage(tile)
-            Interface.getInstance().showMessage("Se eu pudesse eu matava mil")
+            Interface.getInstance().showMessage("Inimigo derrotado!")
 
         }
 
@@ -253,10 +231,8 @@ class Map {
             Interface.getInstance().showMessage("Morri!!")
 
         }
-        console.log("a carne sumiu?", this.buildRoom);
 
     }
-
 
 
 }

@@ -1,13 +1,15 @@
 import Enemies from "./enemies.js";
 import Direction from "../../../util/direction.js";
-
 import Hammer from "../../notSolidObjects/hammer.js";
+import NotSolidObjects from "../../notSolidObjects/notSolidObjects.js";
+import Blood from "../../notSolidObjects/blood.js";
+import Interface from "../../../game/interface.js";
 
 
 class Thief extends Enemies {
     attackPower = 1;
     lifePoints = 5;
-    thiefPocket =[];
+    thiefPocket = [];
 
 
     constructor(position) {
@@ -19,19 +21,21 @@ class Thief extends Enemies {
         return "Thief.gif";
     }
 
-    fillPocket(){
+    fillPocket(equip) {
 
+        this.thiefPocket.push(equip);
+    }
 
-    // if  (this.position === instanceof Hammer.position){
-    //
-    // }
+    dropPocket() {
+        //a ideia era correr o array, conferir os itens para retornar ao mapa após ser derrotado.
+        //simplifiquei pela falta de tempo :)
 
+        if( this.thiefPocket.length > 0) {
 
-    //     if (tile instanceof Hammer) {
-    // map.disappearTile(newPosition);
-    // this.thiefPocket.push(new Hammer() )
-}
-
+            this.thiefPocket.pop();
+            return new Hammer(this.position);
+        }
+    }
 
 
     randomMove(activeMap) {
@@ -58,7 +62,6 @@ class Thief extends Enemies {
                 break;
 
             case 4:
-                // console.log(this.activeMap)
                 this.moves(Direction.DOWN, activeMap);
                 this.moves(Direction.LEFT, activeMap);
 
@@ -66,6 +69,61 @@ class Thief extends Enemies {
 
 
     }
+
+    moves(direction, map) {
+
+        let newPosition = this.position.plus(direction.asVector());
+
+
+        let tile = map.buildRoom.find(function (tile) {
+            return tile.position.equals(newPosition)
+        })
+
+        if (map.isTileFree(newPosition)) {
+
+            //sobrepor o metodo para o thief pegar equip no chao
+
+            if (tile instanceof NotSolidObjects) {
+
+                let indexToRemove = map.buildRoom.indexOf(tile);
+                map.buildRoom.splice(indexToRemove, 1);
+
+                Interface.getInstance().removeImage(tile);
+                Interface.getInstance().showMessage('Ladrão roubou um item')
+                this.fillPocket()
+            }
+
+
+            if (newPosition.x > 0 && newPosition.x < 10 && newPosition.y > 0 && newPosition.y < 10) {
+
+                this.position = newPosition;
+            }
+
+        }
+
+    }
+
+
+
+    takeDamage(attackPower, map) {
+        this.lifePoints = this.lifePoints - attackPower;
+
+        if (this.lifePoints <= 0) {
+            let item = this.dropPocket();
+            if (item) {
+                map.buildRoom.push(item);
+                Interface.getInstance().addImage(item);
+            }
+
+
+            map.disappearTile(this.position);
+            let blood = new Blood(this.position);
+            Interface.getInstance().addImage(blood);
+            map.buildRoom.push(blood);
+        }
+    }
+
+
 }
 
 export default Thief;

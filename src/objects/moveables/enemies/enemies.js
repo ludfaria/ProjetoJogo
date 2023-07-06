@@ -4,7 +4,6 @@ import Moveables from "../moveables.js";
 
 
 class Enemies extends Moveables {
-    chase = false;
 
     constructor(position) {
         super(position);
@@ -21,15 +20,13 @@ class Enemies extends Moveables {
         let a = hero.position.x - this.position.x;
         let b = hero.position.y - this.position.y;
 
-        // Pitagoras (Formula de bhaskara)
+        // (Formula de bhaskara)
         // let distP = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 
         // Manhathan distance
         let distance = Math.abs(a) + Math.abs(b);
 
-
         if (distance < 4 && distance > 1) {
-            // this.chase = true;
             this.chaseHero(hero, activeMap);
 
         } else if (distance === 1) {
@@ -72,7 +69,6 @@ class Enemies extends Moveables {
 
     randomMove(activeMap) {
 
-        // if (this.chase === false) {
         let random = Math.floor(Math.random() * 4) + 1;
         switch (random) {
             case 1:

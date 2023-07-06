@@ -1,10 +1,10 @@
 import SolidObject from "../solidObjects/solidObject.js";
-import Meat from "../notSolidObjects/meat.js";
 import NotSolidObjects from "../notSolidObjects/notSolidObjects.js";
 import Hero from "./hero.js";
-import OpenDoor from "../solidObjects/openDoor.js";
 import Blood from "../notSolidObjects/blood.js";
 import Interface from "../../game/interface.js";
+import Door from "../door.js";
+
 
 class Moveables extends SolidObject {
     attackPower = 1;
@@ -16,8 +16,10 @@ class Moveables extends SolidObject {
 
 
     changeToNewPosition(newHeroPosition) {
+        Interface.getInstance().addImage(this);
         this.position = newHeroPosition;
     }
+
     moves(direction, map) {
 
         let newPosition = this.position.plus(direction.asVector());
@@ -29,43 +31,51 @@ class Moveables extends SolidObject {
 
         if (map.isTileFree(newPosition)) {
             //Apenas o Heroi pode pegar os itens
+
             if (tile instanceof NotSolidObjects && this instanceof Hero) {
                 map.disappearTile(newPosition);
+            } else if (tile instanceof Door && this instanceof Hero) {
+                map.changeRoom(tile);
+                return;
             }
-            // else if (tile instanceof OpenDoor) {
-            //     map.changeRoom(tile);
-            //     return;
-            // }
 
-            //Todos podem se mover
-            this.position = newPosition;
+            //Todos podem se mover dentro do grid
+            if (newPosition.x > 0 && newPosition.x < 10 && newPosition.y > 0 && newPosition.y < 10) {
+
+                this.position = newPosition;
+            }
 
         } else {
 
             if (tile instanceof Moveables) {
+                //para evitar que os inimigos se ataquem. Inimigo tem o próprio método de ataque.
 
-                this.attack(tile, map)//se for instancia de moveable, acontece a colisão
+                if (this instanceof Hero) {
+
+                    this.attack(tile, map);
+                }
             }
 
-       }
+        }
 
     }
 
     attack(target, map) {
-        console.log('attack -> this moveable:', this);
-        console.log("TARGET", target);
         target.takeDamage(this.attackPower, map)
-        console.log("SE ME ATACAR, EU VOU ATACAR");
+
     }
 
     takeDamage(attackPower, map) {
+
         this.lifePoints = this.lifePoints - attackPower;
-        console.log("fui atacado. minha vida agora é", this.lifePoints );
+        console.log("fui atacado. minha vida agora é", this.lifePoints);
 
         if (this.lifePoints <= 0) {
             console.log("MORRI");
             map.disappearTile(this.position);
+
             let blood = new Blood(this.position);
+
             Interface.getInstance().addImage(blood);
             map.buildRoom.push(blood);
         }

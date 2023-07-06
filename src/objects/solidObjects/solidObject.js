@@ -1,4 +1,4 @@
-import ImageTile from "../../game/imageTile.js";0
+import ImageTile from "../../game/imageTile.js";
 
 class SolidObject extends ImageTile {
     constructor(position) {
