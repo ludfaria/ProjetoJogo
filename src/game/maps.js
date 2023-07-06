@@ -15,10 +15,9 @@ import Hammer from "../objects/notSolidObjects/hammer.js";
 import Key from "../objects/notSolidObjects/key.js";
 import Equipments from "../objects/notSolidObjects/equipments.js";
 import Interface from "./interface.js";
-import StatusBar from "../objects/statusBar.js";
+import StatusBar from "../objects/statusItems/statusBar.js";
 import Door from "../objects/solidObjects/door.js";
 import OpenDoor from "../objects/solidObjects/openDoor.js";
-import statusBar from "../objects/statusBar.js";
 import Thief from "../objects/moveables/enemies/thief.js";
 import Engine from "./engine.js";
 
@@ -255,8 +254,7 @@ class Map {
 
         }
         console.log("a carne sumiu?", this.buildRoom);
-        //              this.buildRoom.splice(Meat, 1);
-        // console.log(array);
+
     }
 
 

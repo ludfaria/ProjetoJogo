@@ -1,4 +1,4 @@
-import ImageTile from "../game/imageTile.js";
+import ImageTile from "../../game/imageTile.js";
 
 class LifeGreen extends ImageTile {
     constructor(position) {

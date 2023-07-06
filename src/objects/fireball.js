@@ -1,7 +1,4 @@
-import ImageTile from "../game/imageTile.js";
 import Firetile from "../game/firetile.js";
-import Position from "../util/position.js";
-import Direction from "../util/direction.js";
 import Moveables from "./moveables/moveables.js";
 
 class Fireball extends Firetile {
@@ -15,7 +12,7 @@ class Fireball extends Firetile {
     }
 
     validateImpact(){
-        // let nextPosition = this.position.plus(Direction.UP.asVector())
+
         let impact = !this.activeMap.isTileFree(this.position);
         console.log('validate isTileFree', impact);
 

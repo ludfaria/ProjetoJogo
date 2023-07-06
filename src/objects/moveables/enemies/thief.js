@@ -19,7 +19,7 @@ class Thief extends Enemies {
         return "Thief.gif";
     }
 
-    fullPocket(){
+    fillPocket(){
 
 
     // if  (this.position === instanceof Hammer.position){
@@ -36,7 +36,7 @@ class Thief extends Enemies {
 
     randomMove(activeMap) {
 
-        // if (this.chase === false) {
+
         let random = Math.floor(Math.random() * 4) + 1;
         switch (random) {
             case 1:

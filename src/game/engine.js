@@ -15,8 +15,8 @@ import Map from "./maps.js";
 import hero from "../objects/moveables/hero.js";
 import Enemies from "../objects/moveables/enemies/enemies.js";
 import skeleton from "../objects/moveables/enemies/skeleton.js";
-import statusBar from "../objects/statusBar.js";
-import StatusBar from "../objects/statusBar.js";
+import statusBar from "../objects/statusItems/statusBar.js";
+import StatusBar from "../objects/statusItems/statusBar.js";
 import Fireball from "../objects/fireball.js";
 import fireball from "../objects/fireball.js";
 import position from "../util/position.js";
@@ -29,7 +29,7 @@ class Engine {
     gui = Interface.getInstance();
     hero = Hero.getInstance();
     tiles = [];
-    activeMap = Map.getInstance();
+    activeMap;
     lastDirections = Direction.UP;
 
 
@@ -42,10 +42,9 @@ class Engine {
         return Engine.#instance;
     }
 
-//essa classe não tem construtor. precisa colocar o hero como atributo?
+
     init() {
         console.log("Engine init");
-
 
         let floorTiles = [];
         for (let x = 0; x < 10; x++) {
@@ -71,30 +70,13 @@ class Engine {
         this.gui.addStatusImages(statusTiles.lifeBar);
 
 
-        // let mapRoom = new Map();
+        let mapRoom = new Map();
+        this.activeMap = mapRoom;
         this.tiles = this.activeMap.buildRoom;
-
-        // this.activeMap = mapRoom;
 
 
         this.gui.addImages(this.tiles);
-
-        //TODO: Arrumar esse new hero
-
-        // this.hero = new Hero(mapRoom.heroPosition);
-        // this.hero = new Hero(new Position(4, 6));
-        // this.activeMap.addHero(this.hero);
-
-
         this.gui.addImage(this.hero);
-
-
-        // let hero = new Hero(new Position(4, 3));
-        // this.gui.addImage(hero);
-
-        //let fireball = new FireBall(new Position(5, 3), Direction.RIGHT);
-        //this.gui.addImage(fireball);
-        //fireball.start();
 
         this.gui.start();
     }
@@ -102,7 +84,7 @@ class Engine {
     // updateMap(newTiles, newHeroPosition) {
     //     console.log(`this.tiles.length`,this.tiles.length)
     //     console.log(`this.tiles`,this.tiles)
-    //     while (this.tiles.length > 0) {
+    //     piwhile (this.tiles.length > 0) {
     //         this.gui.removeImage(this.tiles[this.tiles.length - 1]);
     //         this.tiles.pop();
     //     }
@@ -197,6 +179,7 @@ class Engine {
             let hammer = new Hammer(this.hero.position);
             this.gui.addImage(hammer);
             this.activeMap.buildRoom.push(hammer)
+
         } else if (deletedItemType === 'key'){
             let key = new Key(this.hero.position);
             this.gui.addImage(key, this.hero.position);

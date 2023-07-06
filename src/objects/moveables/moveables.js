@@ -3,6 +3,8 @@ import Meat from "../notSolidObjects/meat.js";
 import NotSolidObjects from "../notSolidObjects/notSolidObjects.js";
 import Hero from "./hero.js";
 import OpenDoor from "../solidObjects/openDoor.js";
+import Blood from "../notSolidObjects/blood.js";
+import Interface from "../../game/interface.js";
 
 class Moveables extends SolidObject {
     attackPower = 1;
@@ -19,9 +21,9 @@ class Moveables extends SolidObject {
     moves(direction, map) {
 
         let newPosition = this.position.plus(direction.asVector());
-        console.log("ESSA É A MOVEABLE NEW POSITION", newPosition)
 
-        let tile = map.buildRoom.find(function (tile) { //PQ .BUILDROOM?
+
+        let tile = map.buildRoom.find(function (tile) {
             return tile.position.equals(newPosition)
         })
 
@@ -34,6 +36,7 @@ class Moveables extends SolidObject {
             //     map.changeRoom(tile);
             //     return;
             // }
+
             //Todos podem se mover
             this.position = newPosition;
 
@@ -46,36 +49,6 @@ class Moveables extends SolidObject {
 
        }
 
-            // let tile = map.buildRoom.find(function (tile) { //PQ .BUILDROOM?
-            //     return tile.position.equals(newPosition)
-            // })
-
-        //     if (tile instanceof NotSolidObjects) {
-        //         map.disappearTile(newPosition);
-        //
-        //     } else {
-        //
-        //         // let tile = map.buildRoom.find(function (tile) { //PQ .BUILDROOM?
-        //         //     return tile.position.equals(newPosition)
-        //         // })
-        //
-        //         if (tile instanceof Moveables) {
-        //
-        //             this.attack(tile, map)//se for instancia de moveable, acontece a colisão
-        //
-        //             // }else{
-        //             //
-        //             //     return this.position
-        //         }
-        //
-        //         // if (tile instanceof Meat) {
-        //         //     console.log("COME A CARNE, MALDITO");
-        //         // }
-        //
-        //
-        //     }
-        // }
-
     }
 
     attack(target, map) {
@@ -83,7 +56,6 @@ class Moveables extends SolidObject {
         console.log("TARGET", target);
         target.takeDamage(this.attackPower, map)
         console.log("SE ME ATACAR, EU VOU ATACAR");
-        //FAZER O TAKE DAMAGE
     }
 
     takeDamage(attackPower, map) {
@@ -93,6 +65,9 @@ class Moveables extends SolidObject {
         if (this.lifePoints <= 0) {
             console.log("MORRI");
             map.disappearTile(this.position);
+            let blood = new Blood(this.position);
+            Interface.getInstance().addImage(blood);
+            map.buildRoom.push(blood);
         }
     }
 

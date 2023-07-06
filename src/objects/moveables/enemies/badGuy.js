@@ -12,10 +12,6 @@ class BadGuy extends Enemies {
     }
 
 
-    // movement(direction) {
-    //     return this.position = this.position.plus(direction.asVector());
-    // }
-
 }
 
 export default BadGuy;

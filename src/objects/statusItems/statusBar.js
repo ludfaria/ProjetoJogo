@@ -1,17 +1,16 @@
-import ImageTile from "../game/imageTile.js";
-import Position from "../util/position.js";
+import Position from "../../util/position.js";
 import BackgroundStatus from "./backgroundStatus.js";
-import Fireball from "./fireball.js";
-import Hammer from "./notSolidObjects/hammer.js";
-import Key from "./notSolidObjects/key.js";
+import Fireball from "../fireball.js";
+import Hammer from "../notSolidObjects/hammer.js";
+import Key from "../notSolidObjects/key.js";
 import LifeGreen from "./lifeGreen.js";
-import Hero from "./moveables/hero.js";
+import Hero from "../moveables/hero.js";
 import halfLife from "./halfLife.js";
 import HalfLife from "./halfLife.js";
 import LifeRed from "./lifeRed.js";
-import Engine from "../game/engine.js";
 
-import Interface from "../game/interface.js";
+
+import Interface from "../../game/interface.js";
 
 class StatusBar {
     background = []; //fzr getter setter
@@ -62,9 +61,9 @@ class StatusBar {
         while (numOfLostLife > 0) {
 
             //Verificar qual é ultimo quadrado que tenha verde
-            //começando pelo ultimo
+            //a começar pelo ultimo
             let lastLifeItem = this.lifeBar.length - 1;
-            //se o quadrado for vermelho, passar para o proximo
+            //se o quadrado for vermelho, passar para o proximo (anterior)
             while (this.lifeBar[lastLifeItem] instanceof LifeRed) {
                 lastLifeItem--;
             }
@@ -93,34 +92,6 @@ class StatusBar {
     }
 
 
-    // recoverLife() {
-    //     let vidaRecuperada = Hero.getInstance().eatMeat(); //como faço o callback
-    //
-    //     while (vidaRecuperada > 0) {
-    //
-    //         //Verificar qual é ultimo quadrado que tenha verde
-    //         //começando pelo ultimo
-    //         let lastLifeItem = this.lifeBar[0];
-    //         //se o quadrado for vermelho, passar para o proximo
-    //         while (this.lifeBar[lastLifeItem] instanceof LifeGreen) {
-    //             lastLifeItem++;
-    //         }
-    //         let x = this.lifeBar[lastLifeItem].position.x;
-    //
-    //         //reduzir o quadrado por nivel verde -> meio -> vermelho
-    //         if (this.lifeBar[lastLifeItem] instanceof LifeRed) {
-    //             this.lifeBar[lastLifeItem] = new halfLife(new Position(x, 0));
-    //         } else if (this.lifeBar[lastLifeItem] instanceof HalfLife) {
-    //             this.lifeBar[lastLifeItem] = new LifeGreen(new Position(x, 0));
-    //         }
-    //
-    //         vidaRecuperada--;
-    //
-    //         Interface.getInstance().addStatusImages(this.lifeBar);
-    //
-    //     }
-    // }
-
 
         addHammer()
         {
@@ -128,37 +99,33 @@ class StatusBar {
             this.hero.addPowerEquipment(1)
         }
 
-        addKey()
-        {
-            for (let x = 9; x < 10; x++) {
-                this.inventory.push(new Key(new Position(x, 0)));
 
+        addItems(objetoColetado) {
+
+            if( this.inventory.length < 3) {
+                let xPosition = this.inventory.length + 7
+
+                let position = new Position(xPosition, 0);
+
+                if (objetoColetado instanceof Hammer) {
+                    this.addHammer();
+                    this.inventory.push(new Hammer(position));
+                }
+
+                if (objetoColetado instanceof Key) {
+                    this.inventory.push(new Key(position));
+                }
+
+                Interface.getInstance().addStatusImage(this.inventory[this.inventory.length - 1]);
+                //posso fazer uma variavel para cada item e adicionar ele.
+
+                console.log("INVENTORY", this.inventory);
+            } else {
+                Interface.getInstance().showMessage('Inventário Cheio!');
             }
+
         }
 
-        addItems(objetoColetado)
-        {
-
-            //TODO: usar um try and catch para limitar o maximo de 3 itens
-            let xPosition = this.inventory.length + 7
-
-            let position = new Position(xPosition, 0);
-
-            if (objetoColetado instanceof Hammer) {
-                this.addHammer();
-                this.inventory.push(new Hammer(position));
-            }
-
-            if (objetoColetado instanceof Key) {
-                this.inventory.push(new Key(position));
-            }
-
-            Interface.getInstance().addStatusImage(this.inventory[this.inventory.length - 1]);
-            //posso fazer uma variavel para cada item e adicionar ele.
-
-            console.log("INVENTORY", this.inventory);
-
-        }
 
         removeFireball() {
         let used = this.fireball.pop();
@@ -172,7 +139,6 @@ class StatusBar {
             console.log("INVENTORY", this.inventory);
 
             let equip = this.inventory[indexToDrop];
-            console.log("equip É:", equip)
 
             if (equip instanceof Hammer) {
 
@@ -186,11 +152,27 @@ class StatusBar {
 
             }
 
-            // this.inventory[indexToDrop] = undefined
-            this.inventory.splice(indexToDrop, 1); //se faz o splice muda o tamanho do array
-            //if ( this.inventory.length > 0) {
-            //    Interface.getInstance().addStatusImages(this.inventory);
-            //}
+            //Remover item do array de inventory
+            this.inventory.splice(indexToDrop, 1);
+
+            //remover todas as imagens
+            this.inventory.map(function (equip) {
+                Interface.getInstance().removeStatusImage(equip);
+            })
+
+            // Ajustar a posicao para nao sobregar ao recolher o item novamente
+            if (this.inventory[0] !== undefined && this.inventory[0].position.x !== 7) {
+                this.inventory[0].position = new Position(7, 0);
+            }
+            if (this.inventory[1] !== undefined && this.inventory[1].position.x !== 8) {
+                this.inventory[1].position = new Position(8, 0);
+            }
+            if (this.inventory[2] !== undefined && this.inventory[2].position.x !== 9) {
+                this.inventory[2].position = new Position(9, 0);
+            }
+
+            //Adicionar todas as imanges na posicao certa
+            Interface.getInstance().addStatusImages(this.inventory);
 
             console.log("O INVENTÁRIO AGORA É", this.inventory);
             return deletedItem;

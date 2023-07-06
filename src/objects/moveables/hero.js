@@ -1,22 +1,13 @@
-import ImageTile from "../../game/imageTile.js";
-import Direction from "../../util/direction.js";
-import Engine from "../../game/engine.js";
-import maps from "../../game/maps.js";
-import engine from "../../game/engine.js";
 import Moveables from "./moveables.js";
 import Interface from "../../game/interface.js";
 import Position from "../../util/position.js";
-import StatusBar from "../statusBar.js";
-import LifeRed from "../lifeRed.js";
-import LifeGreen from "../lifeGreen.js";
-import halfLife from "../halfLife.js";
-import HalfLife from "../halfLife.js";
-import statusBar from "../statusBar.js";
+import StatusBar from "../statusItems/statusBar.js";
+
 
 class Hero extends Moveables {
-    attackPower = 1;
+    attackPower = 2;
     fullTotalLife = 8;
-    lifePoints = 8; //deveria estar no construtor?
+    lifePoints = 8;
     initialPosition;
 
 
@@ -44,7 +35,7 @@ class Hero extends Moveables {
     }
 
     addPowerEquipment(power) {
-        // this.attackPower += power;
+
         this.attackPower = this.attackPower + power;
         Interface.getInstance().showMessage("It's hammer time!");
         console.log('hero power', this.attackPower);
@@ -59,13 +50,13 @@ class Hero extends Moveables {
         this.lifePoints = this.lifePoints - attackPower;
         StatusBar.getInstance().loseLifeBar(attackPower)
         console.log("fui atacado. minha vida agora é", this.lifePoints);
-        // this.resetPosition()
+
         if (this.lifePoints <= 0) {
             console.log("MORRI");
             Interface.getInstance().removeImage(this)
 
             Interface.getInstance().showMessage("!! GAME OVER !!")
-            // map.disappearTile(this.position);
+
         }
     }
 
